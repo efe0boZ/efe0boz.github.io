@@ -5,8 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Efe Boza - Bilgisayar Mühendisi</title>
     <link rel="stylesheet" href="portfolio.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js"></script>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-car">🚗</div>
+            <h2>Yükleniyor...</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">3D dünya hazırlanıyor</p>
+        </div>
+    </div>
+
+    <!-- 3D Canvas -->
+    <canvas id="webgl"></canvas>
+
+    <!-- Overlay UI -->
+    <div class="overlay-ui">
+        <div class="instructions">
+            <h3>🎮 Kontroller</h3>
+            <p>⬆️ W / ↑ - İleri</p>
+            <p>⬇️ S / ↓ - Geri</p>
+            <p>⬅️ A / ← - Sol</p>
+            <p>➡️ D / → - Sağ</p>
+            <p>🖱️ Sürükle - Kamera</p>
+        </div>
+        <div class="info-panel">
+            <h2>Efe Boza</h2>
+            <p>Bilgisayar Mühendisi</p>
+            <button class="explore-btn">Dünyayı Keşfet</button>
+        </div>
+    </div>
+
     <!-- Header / Navbar -->
     <header>
         <nav class="navbar">
@@ -275,6 +309,7 @@
         </div>
     </footer>
 
+    <script src="3d-world.js"></script>
     <script src="portfolio.js"></script>
 </body>
 </html>

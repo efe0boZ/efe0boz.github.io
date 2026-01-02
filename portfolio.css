@@ -23,6 +23,218 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* 3D Canvas */
+#webgl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-car {
+    font-size: 5rem;
+    animation: drive 2s ease-in-out infinite;
+}
+
+@keyframes drive {
+    0%, 100% {
+        transform: translateX(-20px);
+    }
+    50% {
+        transform: translateX(20px);
+    }
+}
+
+.loading-content h2 {
+    font-size: 2.5rem;
+    margin: 1rem 0;
+}
+
+.loading-bar {
+    width: 300px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    margin: 2rem auto;
+    overflow: hidden;
+}
+
+.loading-progress {
+    height: 100%;
+    background: white;
+    border-radius: 10px;
+    animation: load 2s ease-in-out infinite;
+}
+
+@keyframes load {
+    0% {
+        width: 0%;
+    }
+    50% {
+        width: 70%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Overlay UI */
+.overlay-ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.instructions {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    border-radius: 15px;
+    color: white;
+    pointer-events: auto;
+    animation: slideInLeft 0.5s ease;
+}
+
+.instructions h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.instructions p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.info-panel {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+    animation: slideInRight 0.5s ease;
+    max-width: 300px;
+}
+
+.info-panel h2 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-panel p {
+    color: var(--gray-color);
+    margin-bottom: 1.5rem;
+}
+
+.explore-btn {
+    width: 100%;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.explore-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px) translateY(-50%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(-50%);
+    }
+}
+
+/* Hide traditional sections when 3D is active */
+header, .hero, section, footer {
+    position: relative;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Make navbar transparent and overlay */
+header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.navbar .container {
+    backdrop-filter: blur(10px);
+}
+
+.logo, .nav-menu a {
+    color: white !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.nav-menu a::after {
+    background: white;
 }
 
 .container {
