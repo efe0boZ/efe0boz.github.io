@@ -193,5 +193,287 @@ window.addEventListener('load', () => {
     }, 100);
 });
 
+// Gallery lightbox functionality
+const galleryItems = document.querySelectorAll('.gallery-item');
+let currentImageIndex = 0;
+
+// Create lightbox
+const createLightbox = () => {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    lightbox.innerHTML = `
+        <div class="lightbox-content">
+            <span class="lightbox-close">&times;</span>
+            <img src="" alt="">
+            <div class="lightbox-caption"></div>
+            <button class="lightbox-prev">&#10094;</button>
+            <button class="lightbox-next">&#10095;</button>
+        </div>
+    `;
+    document.body.appendChild(lightbox);
+    
+    // Add lightbox styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .lightbox.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.3s ease;
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(102, 126, 234, 0.5);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .lightbox-close:hover {
+            color: var(--primary-color);
+        }
+        
+        .lightbox-caption {
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .lightbox-prev, .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(102, 126, 234, 0.8);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .lightbox-prev {
+            left: -60px;
+        }
+        
+        .lightbox-next {
+            right: -60px;
+        }
+        
+        .lightbox-prev:hover, .lightbox-next:hover {
+            background: var(--primary-color);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.7); }
+            to { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .lightbox-prev, .lightbox-next {
+                font-size: 18px;
+                padding: 10px 15px;
+            }
+            .lightbox-prev {
+                left: 10px;
+            }
+            .lightbox-next {
+                right: 10px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    return lightbox;
+};
+
+const lightbox = createLightbox();
+const lightboxImg = lightbox.querySelector('img');
+const lightboxCaption = lightbox.querySelector('.lightbox-caption');
+const lightboxClose = lightbox.querySelector('.lightbox-close');
+const lightboxPrev = lightbox.querySelector('.lightbox-prev');
+const lightboxNext = lightbox.querySelector('.lightbox-next');
+
+const openLightbox = (index) => {
+    currentImageIndex = index;
+    const item = galleryItems[index];
+    const img = item.querySelector('img');
+    const overlay = item.querySelector('.gallery-overlay');
+    
+    lightboxImg.src = img.src;
+    lightboxCaption.innerHTML = `<h3>${overlay.querySelector('h3').textContent}</h3><p>${overlay.querySelector('p').textContent}</p>`;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+const closeLightbox = () => {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = 'auto';
+};
+
+const showPrevImage = () => {
+    currentImageIndex = (currentImageIndex - 1 + galleryItems.length) % galleryItems.length;
+    openLightbox(currentImageIndex);
+};
+
+const showNextImage = () => {
+    currentImageIndex = (currentImageIndex + 1) % galleryItems.length;
+    openLightbox(currentImageIndex);
+};
+
+galleryItems.forEach((item, index) => {
+    item.addEventListener('click', () => openLightbox(index));
+});
+
+lightboxClose.addEventListener('click', closeLightbox);
+lightboxPrev.addEventListener('click', showPrevImage);
+lightboxNext.addEventListener('click', showNextImage);
+
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        closeLightbox();
+    }
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showPrevImage();
+    if (e.key === 'ArrowRight') showNextImage();
+});
+
+// Enhanced scroll animations
+const observeGallery = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.style.animation = `scaleIn 0.6s ease forwards`;
+            }, index * 100);
+        }
+    });
+}, { threshold: 0.1 });
+
+galleryItems.forEach(item => {
+    item.style.opacity = '0';
+    observeGallery.observe(item);
+});
+
+// Parallax effect for sections
+const parallaxSections = document.querySelectorAll('.skills, .projects, .gallery');
+window.addEventListener('scroll', () => {
+    parallaxSections.forEach(section => {
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * 0.3;
+        section.style.transform = `translateY(${rate}px)`;
+    });
+});
+
+// Cursor trail effect
+let coords = { x: 0, y: 0 };
+let circles = [];
+
+const colors = [
+    'rgba(102, 126, 234, 0.5)',
+    'rgba(118, 75, 162, 0.5)',
+    'rgba(240, 147, 251, 0.5)'
+];
+
+for (let i = 0; i < 12; i++) {
+    let circle = document.createElement('div');
+    circle.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.1s;
+        background: ${colors[i % colors.length]};
+    `;
+    circles.push(circle);
+    document.body.appendChild(circle);
+}
+
+window.addEventListener('mousemove', (e) => {
+    coords.x = e.clientX;
+    coords.y = e.clientY;
+});
+
+function animateCircles() {
+    let x = coords.x;
+    let y = coords.y;
+    
+    circles.forEach((circle, index) => {
+        circle.style.left = x - 10 + 'px';
+        circle.style.top = y - 10 + 'px';
+        circle.style.transform = `scale(${(circles.length - index) / circles.length})`;
+        
+        const nextCircle = circles[index + 1] || circles[0];
+        x += (nextCircle.offsetLeft - circle.offsetLeft) * 0.3;
+        y += (nextCircle.offsetTop - circle.offsetTop) * 0.3;
+    });
+    
+    requestAnimationFrame(animateCircles);
+}
+
+animateCircles();
+
+// Smooth reveal for sections
+const revealSections = document.querySelectorAll('section');
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, { threshold: 0.1 });
+
+revealSections.forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(50px)';
+    section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    revealObserver.observe(section);
+});
+
 console.log('Portfolio loaded successfully! ✨');
 console.log('Developed by Efe Boza');
