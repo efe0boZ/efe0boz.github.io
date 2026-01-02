@@ -1,3 +1,53 @@
+// Custom Animated Cursor
+const cursor = document.createElement('div');
+const cursorFollower = document.createElement('div');
+cursor.className = 'custom-cursor';
+cursorFollower.className = 'custom-cursor-follower';
+document.body.appendChild(cursor);
+document.body.appendChild(cursorFollower);
+
+let mouseX = 0, mouseY = 0;
+let cursorX = 0, cursorY = 0;
+let followerX = 0, followerY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+function animateCursor() {
+    cursorX += (mouseX - cursorX) * 0.3;
+    cursorY += (mouseY - cursorY) * 0.3;
+    followerX += (mouseX - followerX) * 0.1;
+    followerY += (mouseY - followerY) * 0.1;
+    
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    cursorFollower.style.left = followerX + 'px';
+    cursorFollower.style.top = followerY + 'px';
+    
+    requestAnimationFrame(animateCursor);
+}
+
+animateCursor();
+
+// Cursor hover effects
+document.querySelectorAll('a, button, .skill-card, .project-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2)';
+        cursor.style.background = 'var(--primary-color)';
+        cursor.style.borderColor = 'white';
+        cursorFollower.style.transform = 'scale(1.5)';
+    });
+    
+    el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursor.style.background = 'transparent';
+        cursor.style.borderColor = 'var(--primary-color)';
+        cursorFollower.style.transform = 'scale(1)';
+    });
+});
+
 // Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
@@ -46,7 +96,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Navbar background change on scroll
+// Navbar background change on scroll - Enhanced
 const navbar = document.querySelector('header');
 let lastScroll = 0;
 
@@ -54,20 +104,22 @@ window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
     if (currentScroll > 100) {
+        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+        navbar.style.backdropFilter = 'blur(20px)';
+        navbar.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.15)';
+    } else {
         navbar.style.background = 'rgba(255, 255, 255, 0.95)';
         navbar.style.backdropFilter = 'blur(10px)';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.backdropFilter = 'none';
+        navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
     }
     
     lastScroll = currentScroll;
 });
 
-// Intersection Observer for fade-in animations
+// Intersection Observer for fade-in animations - Enhanced
 const observerOptions = {
     threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
+    rootMargin: '0px 0px -50px 0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
@@ -75,16 +127,17 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
+            entry.target.classList.add('animated');
         }
     });
 }, observerOptions);
 
 // Observe all sections and cards
-const animateElements = document.querySelectorAll('.skill-card, .project-card, .about-text, .contact-content');
-animateElements.forEach(el => {
+const animateElements = document.querySelectorAll('.skill-card, .project-card, .about-text, .contact-content, .section-title');
+animateElements.forEach((el, index) => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    el.style.transform = 'translateY(50px)';
+    el.style.transition = `opacity 0.8s ease ${index * 0.1}s, transform 0.8s ease ${index * 0.1}s`;
     observer.observe(el);
 });
 
