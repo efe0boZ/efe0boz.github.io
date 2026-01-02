@@ -31,20 +31,38 @@ function animateCursor() {
 
 animateCursor();
 
-// Cursor hover effects
-document.querySelectorAll('a, button, .skill-card, .project-card').forEach(el => {
+// Cursor hover effects - Enhanced with ripple and glow
+document.querySelectorAll('a, button, .skill-card, .project-card, .gallery-item').forEach(el => {
     el.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'scale(2)';
-        cursor.style.background = 'var(--primary-color)';
+        cursor.style.transform = 'scale(2.5)';
+        cursor.style.background = 'radial-gradient(circle, var(--primary-color), var(--secondary-color))';
         cursor.style.borderColor = 'white';
-        cursorFollower.style.transform = 'scale(1.5)';
+        cursor.style.boxShadow = '0 0 20px var(--primary-color)';
+        cursorFollower.style.transform = 'scale(2)';
+        cursorFollower.style.borderColor = 'var(--accent-color)';
     });
     
     el.addEventListener('mouseleave', () => {
         cursor.style.transform = 'scale(1)';
         cursor.style.background = 'transparent';
         cursor.style.borderColor = 'var(--primary-color)';
+        cursor.style.boxShadow = 'none';
         cursorFollower.style.transform = 'scale(1)';
+        cursorFollower.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+    });
+    
+    // Add click ripple effect
+    el.addEventListener('click', (e) => {
+        const ripple = document.createElement('span');
+        ripple.className = 'click-ripple';
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        el.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
     });
 });
 
@@ -205,15 +223,38 @@ skillBars.forEach(bar => {
     skillObserver.observe(bar);
 });
 
-// Add parallax effect to hero section
+// Add parallax effect to hero section with enhanced depth
 const hero = document.querySelector('.hero');
 if (hero) {
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
         const parallax = scrolled * 0.5;
         hero.style.transform = `translateY(${parallax}px)`;
+        
+        // Add depth effect to hero content
+        const heroContent = hero.querySelector('.hero-content');
+        if (heroContent) {
+            heroContent.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 - scrolled * 0.0005})`;
+            heroContent.style.opacity = 1 - scrolled * 0.002;
+        }
     });
 }
+
+// Add magnetic effect to buttons
+const buttons = document.querySelectorAll('.btn, .contact-form button');
+buttons.forEach(button => {
+    button.addEventListener('mousemove', (e) => {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        button.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.05)`;
+    });
+    
+    button.addEventListener('mouseleave', () => {
+        button.style.transform = 'translate(0, 0) scale(1)';
+    });
+});
 
 // Add active class to current nav link based on scroll position
 const sections = document.querySelectorAll('section[id]');
